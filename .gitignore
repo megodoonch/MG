@@ -15,5 +15,5 @@ hs_err_pid*
 .DS_store
 build.xml
 build/
-manifext.mf
+manifest.mf
 nbproject/
