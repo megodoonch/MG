@@ -20,12 +20,12 @@ public class Expression  {
         int length = g.licSize() + 1;
         expression = new Lex[length];
         //make a copy so yoou don't mess with the lexicon
-        List<Feature> fs = new ArrayList();
-        li.getFeatures().stream().forEach((f) -> { // this is what netbeans suggested in place of a for loop
-            fs.add(f);
-        });
-        Lex copy = new Lex(li.getString(),fs);
-        expression[0] = copy;        
+//        List<Feature> fs = new ArrayList();
+//        li.getFeatures().stream().forEach((f) -> { // this is what netbeans suggested in place of a for loop
+//            fs.add(f);
+//        });
+//        Lex copy = new Lex(li.getString(),fs);
+        expression[0] = li.copy();        
         
     }
     
@@ -67,9 +67,23 @@ public class Expression  {
         } 
     }
 
-    public boolean isComplete(MG g) {
+    public Expression copy(MG g) {
+        Expression newExpr = new Expression(this.head().copy(),g);
+        int i=1;
+        while (i<g.licSize() +1) {
+            
+            newExpr.expression[i] = this.expression[i].copy(); 
+            i++;
+        }
+        return newExpr;
+    }
+    
+    public boolean isComplete(MG g, ArrayList<String> cats) {
+        Feature h = this.headFeature();
         if (this.head().getFeatures().size()==1  // only one feature left
-                && g.getFinals().contains(this.headFeature().getValue())) {  // it's a final feature
+                && h.getIntValue() ==-1 // it's negative
+                && h.selectional(g) // it's selectional
+                && cats.contains(this.headFeature().getValue())) {  // it's a feature in the given set
             // make sure the movers are null
             int i = 1;
             while (i<g.licSize()+1) {
@@ -84,6 +98,20 @@ public class Expression  {
               
     }
 
+    public boolean isComplete(MG g, boolean fin) {
+        if (fin) { // finals
+            return this.isComplete(g,g.getFinals());
+        } else { // any category
+            return this.isComplete(g,g.getBareSelFeatures());
+        }
+    }
+    
+    
+    public boolean isComplete(MG g) {
+        // default only returns true if the category is final
+        return this.isComplete(g, true);
+    }
+    
     public boolean isValid() throws MGException {
         if (this.valid) {
             return this.valid;
@@ -96,8 +124,26 @@ public class Expression  {
         this.valid = valid;
     }
     
-    
-    
+    public String spellout(MG g) {
+        if (this.isComplete(g,false)) { // spells out any complete phrase regardless of category
+            return this.head().getString();
+        } else {
+            System.out.println("Spellout error: you can't spell out an incomplete phrase");
+            return null;
+        }
+//        try {
+//            !this.isComplete(g,false); // spells out any complete phrase regardless of category
+//            throw new MGException("Spellout error: you can't spell out an incomplete phrase");
+//            
+//
+//        } catch (MGException error) {
+//            System.out.println(error.getMessage());
+//            return this.head().getString();
+//
+//        }
+        
+    }
+
     @Override
     public String toString() {
         String string = "";

@@ -16,19 +16,22 @@ public class DerivationTree {
     private DerivationTree negDaughter;
     private Lex lexicalDaughter;
     
-    public DerivationTree(Lex li) {
+    public DerivationTree(Lex li) { 
+        // nodes with lexical daughters are Lex 
         this.mother = "Lex";
         this.lexicalDaughter = li;
         
     }
     
     public DerivationTree(DerivationTree t1, DerivationTree t2) {
+        // nodes with two daughters are always Merge
         this.mother = "Merge";
         this.posDaughter = t1;
         this.negDaughter = t2;
     }
     
     public DerivationTree(DerivationTree t) {
+        // nodes with one daughter that's a tree are always Move
         this.mother = "Move";
         this.posDaughter = t;
     }
@@ -50,6 +53,10 @@ public class DerivationTree {
     }
 
     public Expression evaluate(MG g) {
+        // evaluate the tree to get an expression
+        if (this == null) {
+            return null;
+        }
         Expression result = null;
         switch (this.mother) {
             case("Lex"): {
@@ -58,17 +65,19 @@ public class DerivationTree {
                 
             }
             case("Merge"): {
-                result = g.mergeStep (this.posDaughter.evaluate(g), this.negDaughter.evaluate(g) );
+                result = g.merge (this.posDaughter.evaluate(g), this.negDaughter.evaluate(g) );
                 break;
             }
             case("Move"): {
-                result = g.moveStep ( this.posDaughter.evaluate(g) );
+                result = g.move ( this.posDaughter.evaluate(g) );
                 break;
             }
         
         }
          return result;
     }
+    
+ 
     
     @Override
     public String toString() {

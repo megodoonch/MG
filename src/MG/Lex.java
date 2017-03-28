@@ -5,6 +5,7 @@
  */
 package MG;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +30,13 @@ public class Lex {
         this.string = string;
     }
 
-    
+    public Lex copy() {
+        ArrayList<Feature> fs = new ArrayList();
+        for (Feature f :this.features) {
+            fs.add(f);
+        }
+        return new Lex(this.string,fs);
+    }
     
     public List<Feature> getFeatures() {
         return features;

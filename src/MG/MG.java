@@ -205,27 +205,29 @@ public class MG {
             
     
     
+    
     //MERGE
-    public boolean merge(Expression expr1,Expression expr2) {
+    public Expression merge(Expression expr1,Expression expr2) {
         
-        
+        // make a copy of expr1 where we'll make our new guy
+        Expression result = expr1.copy(this);
         // if Merge even applies
-        if (expr1.headFeature().getSet().equals("sel") // it's a selectional feature
-                && expr1.headFeature().match(expr2.headFeature()))  { // features match and expr1 is +ve
+        if (result.headFeature().getSet().equals("sel") // it's a selectional feature
+                && result.headFeature().match(expr2.headFeature()))  { // features match and result is +ve
             //check features
-            expr1.expression[0].check(); 
+            result.expression[0].check(); 
             expr2.expression[0].check();
             // merge 1: merge and stay
             if (expr2.getExpression()[0].getFeatures().isEmpty()) {
                 // combine strings to the right
-                expr1.getExpression()[0].combine(expr2.getExpression()[0].getString(),false);
+                result.getExpression()[0].combine(expr2.getExpression()[0].getString(),false);
               
             // Merge 2: merge a mover    
             } else {
                 // if +combine
                 if (expr2.headFeature().getPolarity().isCombine()) {
                     //combine string on left (spec)
-                    expr1.getExpression()[0].combine(expr2.getExpression()[0].getString(),true);                    
+                    result.getExpression()[0].combine(expr2.getExpression()[0].getString(),true);                    
                 }
                 
                 // if -store, remove string part
@@ -233,109 +235,79 @@ public class MG {
                     expr2.head().setString("");
                 }
                 // store whereever it belongs
-                expr1.store(expr2.head());
+                result.store(expr2.head());
     
             }
             
             // combine mover lists
-            expr1.combineMovers(expr2, this.licSize()+1);
+            result.combineMovers(expr2, this.licSize()+1);
             
             
         } else {
             System.out.println("\n*** Merge error *** : features don't match or head feature isn't a selectional feature");
-            return false;
+            return null;
         }
         
-        return true;
+        return result;
     }
     
     
     // MOVE
-    public boolean move(Expression expr) {
+    public Expression move(Expression expr) {
+        Expression result = expr.copy(this);
+        
         // if top feature is a poitive licensing feature
-        Feature head = expr.headFeature();
+        Feature head = result.headFeature();
         if (head.getSet().equals("lic")) {
             Integer i = head.getNumber();
-            Lex mover = expr.getExpression()[i];
+            Lex mover = result.getExpression()[i];
             if (mover == null) {
                 System.out.println("Move error: no matching mover");
-                return false;
+                return null;
             } else {
                 // check features
                 if (head.match(mover.getFeatures().get(0))) {
-                    expr.head().check();
+                    result.head().check();
                     mover.check();
                     
                     // remove mover
-                    expr.getExpression()[i] = null;
+                    result.getExpression()[i] = null;
                     
                     // move 1: move and stay
                     if (mover.getFeatures().isEmpty()) {
                         // combine on left
-                        expr.getExpression()[0].combine(mover.getString(),true);
-                        return true;
+                        result.getExpression()[0].combine(mover.getString(),true);
+                        return result;
  
                     // move 2 : move and keep moving    
                     } else {
                         //combine
                         if (mover.getFeatures().get(0).getPolarity().isCombine()) {
-                            expr.getExpression()[0].combine(mover.getString(),true);
+                            result.getExpression()[0].combine(mover.getString(),true);
                         }
                         //store
                         // if -store, remove string part
                         if (!mover.getFeatures().get(0).getPolarity().isStore()) {
                             mover.setString("");
                         }
-                        expr.store(mover);
-                        return true;
+                        result.store(mover);
+                        return result;
                         
                     }
                     
                 } else {
                     System.out.println("Move error: features don't match. This shouldn't happen if Move is working correctly.");
-                    return false;
+                    return null;
                 }
                 
             }
             
         } else {
             System.out.println("Move error: not a licensing feature");
-            return false;
+            return null;
         }
     }
     
-    public Expression mergeStep(Expression expr1, Expression expr2) {
-        //apply Merge. if it fails, throw an exception, otherwise return result.
-
-        boolean valid = this.merge(expr1, expr2);
-        expr1.setValid(valid);
-        
-        try {
-            expr1.isValid();
-            
-        } catch (MGException e) {
-            System.out.println("Merge error");
-            e.printStackTrace();
-        }
-
-        return expr1;
-    }
-    
-    public Expression moveStep(Expression expr)  {
-        boolean valid = this.move(expr);
-        expr.setValid(valid);
-        
-        try {
-            expr.isValid();
-            
-        } catch (MGException e) {
-            System.out.println("Move error");
-            e.printStackTrace();
-        }
-
-        return expr;
-        
-        
-    }
+ 
     
 }

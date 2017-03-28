@@ -39,10 +39,10 @@ public class Numeration {
         }
     }
     
-    public boolean merge(int i, int j, boolean print) {
+    public Expression merge(int i, int j, boolean print) {
         // merge expressions at index i and j        
-        boolean merged = this.g.merge(numeration.get(i), numeration.get(j));
-        if (merged) { 
+        Expression merged = this.g.merge(numeration.get(i), numeration.get(j));
+        if (merged != null) { 
             if (print) {
                 System.out.println("\n--> Generated " + numeration.get(i));
             }
@@ -56,13 +56,13 @@ public class Numeration {
         
     }
 
-    public boolean merge(int i, int j) {
+    public Expression merge(int i, int j) {
         return this.merge(i, j,false);
     }
     
-    public boolean move(int i, boolean print) {
-        boolean moved = this.g.move(numeration.get(i));
-        if (moved) { 
+    public Expression move(int i, boolean print) {
+        Expression moved = this.g.move(numeration.get(i));
+        if (moved !=null) { 
             if (print) {
                 System.out.println("\n--> Generated " + numeration.get(i));
             }
@@ -76,7 +76,7 @@ public class Numeration {
         
     }
     
-    public boolean move(int i) {
+    public Expression move(int i) {
         return this.move(i,false);
     }
     

@@ -17,25 +17,35 @@ public class Test {
         // generate MG
         MG g = Main.defaultMG();
         Numeration numeration = new Numeration(g);
-        
-        
-        // TEST 1: the cat slept
-        System.out.println("Test case 1: the cat slept");
         for (int i : new Integer[] {0,3,6,9}) {
             numeration.addExpression(g.getLexicon().get(i)); 
         
         }
         
-        System.out.println("Merge");
+        System.out.println("Let's start numeration-style\n");
+        
+        // bad merge
+        System.out.println("Test 0: bad Merge");
+        System.out.println(String.format("\nMerge %d and %d", 0, 0));
+        numeration.merge(0, 0,true);
+        
+        // TEST 1: the cat slept
+        System.out.println("\nTest case 1: the cat slept");
+        
+        
+        
+        
+        numeration.printNumeration();
+        System.out.println(String.format("\nMerge %d and %d", 0, 1));
         numeration.merge(0, 1,true);
-        System.out.println("Merge");
+        System.out.println(String.format("\nMerge %d and %d",1,0));
         numeration.merge(1,0,true);
-        System.out.println("Merge");
+        System.out.println(String.format("\nMerge %d and %d",1,0));
         numeration.merge(1,0,true);
-        System.out.println("Move");
+        System.out.println(String.format("\nMove in %d",0));
         numeration.move(0,true);
         
-        System.out.println("Checking...");
+        System.out.println("\nChecking...");
         if (numeration.getNumeration().size() == 1) {
             Expression s = numeration.getNumeration().get(0);
             if (s.isComplete(g)) {
@@ -51,7 +61,8 @@ public class Test {
         }
 
         // TEST 2: 
-        System.out.println("Test case 2: which cat slept");
+        System.out.println("\n*Test case 2: which cat slept*");
+        System.out.println("This time we do everything under the hood with merge and move, which output expressions");
         
         
         g.printLexicon();
@@ -64,39 +75,63 @@ public class Test {
         
         //numeration.printNumeration();
         
+        // get from numeration, apply merge/move which outputs an expression
         Expression expr = 
-                g.moveStep(
-                g.mergeStep(numeration.getNumeration().get(4), 
-                g.moveStep(
-                g.mergeStep(numeration.getNumeration().get(3),
-                g.mergeStep(numeration.getNumeration().get(2),
-                g.mergeStep(numeration.getNumeration().get(0), numeration.getNumeration().get(1)))))));
+                g.move(
+                g.merge(numeration.getNumeration().get(4), 
+                g.move(
+                g.merge(numeration.getNumeration().get(3),
+                g.merge(numeration.getNumeration().get(2),
+                g.merge(numeration.getNumeration().get(0), numeration.getNumeration().get(1)))))));
         
-        System.out.println("\noutput: \n" + expr.head().getString() + " \nof category " + expr.headFeature());
+        System.out.println("\noutput: " + expr);
         
+        System.out.println(expr.head().getString() + " \nof category " + expr.headFeature());
+        
+        
+        System.out.println("\n*Test 3: which cat slept*");
+        System.out.println("This time we don't use the numeration at all, and just make expressions from the lexicon.");
         Expression expr2 = 
-               g.moveStep(
-                       g.mergeStep(new Expression(g.getLexicon().get(10),g), 
-                               g.moveStep(
-                                       g.mergeStep(new Expression(g.getLexicon().get(9),g), 
-                                               g.mergeStep(new Expression(g.getLexicon().get(6),g),
-                                                    g.mergeStep(new Expression(g.getLexicon().get(11),g), new Expression(g.getLexicon().get(3),g) )
+               g.move(
+                       g.merge(new Expression(g.getLexicon().get(10),g), 
+                               g.move(
+                                       g.merge(new Expression(g.getLexicon().get(9),g), 
+                                               g.merge(new Expression(g.getLexicon().get(6),g),
+                                                    g.merge(new Expression(g.getLexicon().get(11),g), new Expression(g.getLexicon().get(3),g) )
                                                )
                                        )
                                )
                        )
                );
         
-        System.out.println("\noutput: \n" + expr2.head().getString() + " \nof category " + expr2.headFeature());
+        System.out.println("\noutput: " + expr2);
+        
+        System.out.println(expr2.head().getString() + " \nof category " + expr2.headFeature());    
         
         
+        // derivation trees proper
+        
+        System.out.println("*Test 4: which cat slept using derivation trees*");
+        
+        // we define trees that we then evaluate.
         DerivationTree t1 = new DerivationTree(new DerivationTree(g.getLexicon().get(11)), new DerivationTree(g.getLexicon().get(3)));
         
-        DerivationTree t2 = new DerivationTree(new DerivationTree(g.getLexicon().get(6)),t1);
+        Expression t1_output = t1.evaluate(g);
+        System.out.println(t1_output);
+        System.out.println("Spellout: " + t1_output.spellout(g));
+        
+        DerivationTree t2 = new DerivationTree (new DerivationTree (new DerivationTree(g.getLexicon().get(10)), new DerivationTree (
+                        new DerivationTree (
+                                new DerivationTree(g.getLexicon().get(9)),  new DerivationTree(
+                                        new DerivationTree(g.getLexicon().get(6)),t1)))));
         
         System.out.println(t2);
         
-        System.out.println(t2.evaluate(g));
+        Expression t2_output = t2.evaluate(g);
+        System.out.println(t2_output);
+        System.out.println("Spellout: " + t2_output.spellout(g));
+        
+        
         
     }
     
