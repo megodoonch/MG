@@ -30,12 +30,17 @@ public class Lex {
         this.string = string;
     }
 
-    public Lex copy() {
-        ArrayList<Feature> fs = new ArrayList();
+    public List<Feature> copyFeatures() {
+        ArrayList<Feature> fs = new ArrayList<>();
         for (Feature f :this.features) {
             fs.add(f);
         }
-        return new Lex(this.string,fs);
+        return fs;
+    }
+    
+    public Lex copy() {
+        
+        return new Lex(this.string,this.copyFeatures());
     }
     
     public List<Feature> getFeatures() {

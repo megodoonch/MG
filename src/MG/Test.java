@@ -13,7 +13,7 @@ public class Test {
     
     private Numeration numeration; 
     
-    public static void main(String[] args) throws MGException { // this needs to be here to use my exceptions
+    public static void main(String[] args) { // this needs to be here to use my exceptions
         // generate MG
         MG g = Main.defaultMG();
         Numeration numeration = new Numeration(g);
@@ -38,10 +38,10 @@ public class Test {
         numeration.printNumeration();
         System.out.println(String.format("\nMerge %d and %d", 0, 1));
         numeration.merge(0, 1,true);
-        System.out.println(String.format("\nMerge %d and %d",1,0));
-        numeration.merge(1,0,true);
-        System.out.println(String.format("\nMerge %d and %d",1,0));
-        numeration.merge(1,0,true);
+        System.out.println(String.format("\nMerge %d and %d",0,2));
+        numeration.merge(0,2,true);
+        System.out.println(String.format("\nMerge %d and %d",0,1));
+        numeration.merge(0,1,true);
         System.out.println(String.format("\nMove in %d",0));
         numeration.move(0,true);
         
@@ -111,27 +111,38 @@ public class Test {
         
         // derivation trees proper
         
-        System.out.println("*Test 4: which cat slept using derivation trees*");
+        System.out.println("\n* Test 4: which cat slept using derivation trees *\n");
         
         // we define trees that we then evaluate.
         DerivationTree t1 = new DerivationTree(new DerivationTree(g.getLexicon().get(11)), new DerivationTree(g.getLexicon().get(3)));
         
         Expression t1_output = t1.evaluate(g);
-        System.out.println(t1_output);
+        System.out.println("*Stop partway*");
+        System.out.println("Generated: " +t1_output);
         System.out.println("Spellout: " + t1_output.spellout(g));
+        
+        System.out.println("\n*continue...*");
         
         DerivationTree t2 = new DerivationTree (new DerivationTree (new DerivationTree(g.getLexicon().get(10)), new DerivationTree (
                         new DerivationTree (
                                 new DerivationTree(g.getLexicon().get(9)),  new DerivationTree(
                                         new DerivationTree(g.getLexicon().get(6)),t1)))));
         
-        System.out.println(t2);
+        System.out.println("\n"+t2);
         
         Expression t2_output = t2.evaluate(g);
-        System.out.println(t2_output);
+        System.out.println("\nGenerated: "+t2_output);
         System.out.println("Spellout: " + t2_output.spellout(g));
         
+        DerivationTree the = new DerivationTree(g.getLexicon().get(0));
         
+        System.out.println(t1.getState());
+        
+        System.out.println(t2.automaton(g));
+        
+        System.out.println(t1.getState());
+        
+        //t2.automaton(g);
         
     }
     

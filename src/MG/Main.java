@@ -183,6 +183,7 @@ public class Main {
                         System.out.println(g);
                         System.out.println("** Change grammar menu **");
                         System.out.println("to add a feature enter f");
+                        System.out.println("to add a polarity enter p");
                         System.out.println("to add a word to the lexicon enter w");
                         System.out.println("to view the grammar, enter vg");
                         System.out.println("to go back to the main menu enter q");
@@ -212,12 +213,48 @@ public class Main {
                                 
                             }
                             
+                            case("p"): {
+                                System.out.println("Enter overt for overt move, \ncovert for covert move, \ncopy for copy move, or \ndel for delete-move");
+                                input = read.nextLine();
+                                switch (input) {
+                                    
+                                    case("overt"): {
+                                        g.addPolarity(new Polarity("-","lic",-1,false,true,"overt"));
+                                        System.out.println("overt move added");
+                                        break;
+                                    }
+                                    case("covert"): {
+                                        g.addPolarity(new Polarity("(-)","lic",-1,true,false,"covert"));
+                                        System.out.println("covert move added");
+                                        break;
+                                    }
+                                    case("copy"): {
+                                        g.addPolarity(new Polarity("c","lic",-1,true,true,"copy"));
+                                        System.out.println("copy move added");
+                                        break;
+                                    }
+                                    case("del"): {
+                                        g.addPolarity(new Polarity("0","lic",-1, false,false,"delete"));
+                                        System.out.println("delete added");
+                                        break;
+                                    }
+                                    default: {
+                                        System.out.println("Invalid move type");
+                                        break;
+                                    }
+                                }
+                                g.generateFeatures(); // re-generate features
+                                break;
+                                
+                                        
+                            }
+                            
                             case("w"): {
                                 System.out.print("enter the string (the word proper): ");
                                 String w = read.nextLine();
                                 System.out.println("enter features by number from this list. Push enter again when you're done.");
                                 g.printFeatures();
-                                ArrayList<Integer> inds = new ArrayList();
+                                ArrayList<Integer> inds = new ArrayList<>();
                                 
                                 while (true) {
                                     input = read.nextLine();
@@ -343,6 +380,7 @@ public class Main {
         g.addLexicalItem("", new Integer[] {11,5,12}); // T
         g.addLexicalItem("", new Integer[] {13,1,14}); // C
         g.addLexicalItem("which", new Integer[] {7,8,4,0}); // -wh
+        
         
         // user interface
         

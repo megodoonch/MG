@@ -19,7 +19,7 @@ public class Numeration {
     
     
     public Numeration(MG g) {
-        this.numeration = new ArrayList();
+        this.numeration = new ArrayList<>();
         this.g = g;
         
     }
@@ -40,13 +40,19 @@ public class Numeration {
     }
     
     public Expression merge(int i, int j, boolean print) {
-        // merge expressions at index i and j        
-        Expression merged = this.g.merge(numeration.get(i), numeration.get(j));
+        // merge expressions at index i and j 
+        Expression expr1 = numeration.get(i);
+        Expression expr2 = numeration.get(j);
+        Expression merged = this.g.merge(expr1,expr2);
         if (merged != null) { 
             if (print) {
-                System.out.println("\n--> Generated " + numeration.get(i));
+                System.out.println("\n--> Generated " + merged);
             }
-            this.numeration.remove(j);
+            this.numeration.remove(expr1);
+            this.numeration.remove(expr2);
+            this.numeration.add(merged);
+            
+            
         }
         
         if (print) {
@@ -64,8 +70,10 @@ public class Numeration {
         Expression moved = this.g.move(numeration.get(i));
         if (moved !=null) { 
             if (print) {
-                System.out.println("\n--> Generated " + numeration.get(i));
+                System.out.println("\n--> Generated " + moved);
             }
+            this.numeration.remove(i);
+            this.numeration.add(moved);
             
         }
         

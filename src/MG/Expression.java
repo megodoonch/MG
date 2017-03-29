@@ -20,7 +20,7 @@ public class Expression  {
         int length = g.licSize() + 1;
         expression = new Lex[length];
         //make a copy so yoou don't mess with the lexicon
-//        List<Feature> fs = new ArrayList();
+//        List<Feature> fs = new ArrayList<>();
 //        li.getFeatures().stream().forEach((f) -> { // this is what netbeans suggested in place of a for loop
 //            fs.add(f);
 //        });
@@ -29,18 +29,20 @@ public class Expression  {
         
     }
     
-    public void store(Lex li, int i) { // store in position i if it's empty
+    public boolean store(Lex li, int i) { // store in position i if it's empty
         if (this.expression[i] == null) {
             this.expression[i] = li;
+            return true;
         } else {
             System.out.println("SMC violation: feature slot " + i + " is already filled");
+            return false;
             
         }
     }
     
-    public void store(Lex li) {
+    public boolean store(Lex li) {
         int i = li.getFeatures().get(0).getNumber();
-        this.store(li,i);
+        return this.store(li,i);
     }
 
     public Lex[] getExpression() {
@@ -70,9 +72,10 @@ public class Expression  {
     public Expression copy(MG g) {
         Expression newExpr = new Expression(this.head().copy(),g);
         int i=1;
-        while (i<g.licSize() +1) {
-            
-            newExpr.expression[i] = this.expression[i].copy(); 
+        while (i<g.licSize()+1 ) {
+            if (this.expression[i] != null) {
+                newExpr.expression[i] = this.expression[i].copy(); 
+            }
             i++;
         }
         return newExpr;
@@ -112,13 +115,7 @@ public class Expression  {
         return this.isComplete(g, true);
     }
     
-    public boolean isValid() throws MGException {
-        if (this.valid) {
-            return this.valid;
-        } else {
-            throw new MGException("Invalid derivation step");
-        }
-    }
+    
 
     public void setValid(boolean valid) {
         this.valid = valid;
@@ -126,7 +123,7 @@ public class Expression  {
     
     public String spellout(MG g) {
         if (this.isComplete(g,false)) { // spells out any complete phrase regardless of category
-            return this.head().getString();
+            return this.head().getString().replaceAll("\\s+"," "); // remove extra spaces
         } else {
             System.out.println("Spellout error: you can't spell out an incomplete phrase");
             return null;

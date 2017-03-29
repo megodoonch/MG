@@ -29,28 +29,22 @@ public class MG {
 
     
     public MG() {
-        this.bareSelFeatures = new ArrayList();
-        this.bareLicFeatures = new ArrayList();
-        this.licPolarities = new ArrayList();
-        this.selPolarities = new ArrayList();
-        this.features = new ArrayList();
-        this.alphabet = new ArrayList();
-        this.lexicon = new ArrayList();
-        this.finals = new ArrayList();
+        this.bareSelFeatures = new ArrayList<>();
+        this.bareLicFeatures = new ArrayList<>();
+        this.licPolarities = new ArrayList<>();
+        this.selPolarities = new ArrayList<>();
+        this.features = new ArrayList<>();
+        this.alphabet = new ArrayList<>();
+        this.lexicon = new ArrayList<>();
+        this.finals = new ArrayList<>();
     
         
     }
 
-    public void addPolarity(Polarity pol) {
-        if (pol.getSet().equals("lic")) {
-            licPolarities.add(pol);
-        } else if (pol.getSet().equals("sel")) {
-            selPolarities.add(pol);
-        }
-    }
     
  
-
+// gets
+    
     public ArrayList<Polarity> getLicPolarities() {
         return licPolarities;
     }
@@ -83,6 +77,17 @@ public class MG {
         return finals;
     }
 
+    
+    // adding things
+    
+    public void addPolarity(Polarity pol) {
+        // add the polarity if new
+        if (pol.getSet().equals("lic") && !this.licPolarities.contains(pol)) {
+            licPolarities.add(pol);
+        } else if (pol.getSet().equals("sel") && !this.selPolarities.contains(pol)) {
+            selPolarities.add(pol);
+        }
+    }
 
     
 
@@ -125,11 +130,15 @@ public class MG {
     }
     
     public int licSize() {
+        // returns number of licensing features in the grammar
         return this.bareLicFeatures.size();
     }
     
     public void generateFeatures() {
-        ArrayList<Feature> newfs = new ArrayList();
+        // using the polarities and bare features of the grammar, generate the feature set
+        ArrayList<Feature> newfs = new ArrayList<>();
+        
+        // licensing features
         int number = 1; // lic features get numbers
         for (String f : this.bareLicFeatures) {
             for (Polarity pol : this.getLicPolarities()) {
@@ -139,6 +148,7 @@ public class MG {
             number++;
         }
         
+        // selectional features
         number = 1; // what the heck, let's give sel feaures numbers too just in case that's useful
         for (String c : this.bareSelFeatures) {
             
@@ -227,7 +237,7 @@ public class MG {
                 // if +combine
                 if (expr2.headFeature().getPolarity().isCombine()) {
                     //combine string on left (spec)
-                    result.getExpression()[0].combine(expr2.getExpression()[0].getString(),true);                    
+                    result.getExpression()[0].combine(expr2.getExpression()[0].getString(),false);                    
                 }
                 
                 // if -store, remove string part
@@ -235,7 +245,9 @@ public class MG {
                     expr2.head().setString("");
                 }
                 // store whereever it belongs
-                result.store(expr2.head());
+                if (!result.store(expr2.head())) { // SMC violation
+                    return null;
+                }
     
             }
             
@@ -290,9 +302,11 @@ public class MG {
                         if (!mover.getFeatures().get(0).getPolarity().isStore()) {
                             mover.setString("");
                         }
-                        result.store(mover);
-                        return result;
                         
+                        if (!result.store(mover)) { //SMC violation
+                            return null;
+                        }
+                        return result; // otherwise, we're good.
                     }
                     
                 } else {

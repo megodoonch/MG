@@ -5,6 +5,9 @@
  */
 package MG;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author meaghanfowlie
@@ -15,13 +18,23 @@ public class DerivationTree {
     private DerivationTree posDaughter;
     private DerivationTree negDaughter;
     private Lex lexicalDaughter;
+    private State state;
+    
     
     public DerivationTree(Lex li) { 
         // nodes with lexical daughters are Lex 
         this.mother = "Lex";
         this.lexicalDaughter = li;
         
+        
     }
+    
+    public DerivationTree(int i, MG g) { // given index in lexicon
+        this.mother = "Lex";
+        Lex li = g.getLexicon().get(i);
+        this.lexicalDaughter = li;
+        this.state = new State(li,g);
+    } 
     
     public DerivationTree(DerivationTree t1, DerivationTree t2) {
         // nodes with two daughters are always Merge
@@ -36,6 +49,8 @@ public class DerivationTree {
         this.posDaughter = t;
     }
 
+    
+    
     public String getMother() {
         return mother;
     }
@@ -51,6 +66,12 @@ public class DerivationTree {
     public Lex getLexicalDaughter() {
         return lexicalDaughter;
     }
+
+    public State getState() {
+        return state;
+    }
+    
+    
 
     public Expression evaluate(MG g) {
         // evaluate the tree to get an expression
@@ -77,7 +98,104 @@ public class DerivationTree {
          return result;
     }
     
+    
+    
+    public State evalToState(MG g) {
+        // state of  dt is the tuple of features, from finite state tree automton in Kobele et al 2007
+        return new State(this.evaluate(g),g);
+   
+    }
+    
+    
+    public State automaton(MG g) {
+        // evaluate the tree to get an expression
+        if (this == null) {
+            return null;
+        }
+        State newState = this.state;
+        switch (this.mother) {
+            case("Lex"): {
+                newState = new State(this.lexicalDaughter,g);
+                break;
+                
+            }
+            case("Merge"): {
+                State state1 = this.posDaughter.automaton(g);
+                State state2 = this.negDaughter.automaton(g);
+                
+                // set the states. this should annotate the current tree with states, i think
+                //this.posDaughter.state = state1;
+                //this.negDaughter.state = state2;
+                
+                if (state1.head().selectional(g) 
+                        && state1.head().match(state2.head())) { // if head of left daugher is sel & features match
+                   
+                    newState = state1.copy(); // copy the left daughter's state so we can mess with it and return it as the new state
+                    State mover = state2.copy(); // possible mover
+                    
+                    // check features
+                    mover.check(0);
+                    newState.check(0);
+          
+                    // Merge 2: merge a mover
+                    if (!mover.state[0].isEmpty()) {
+                        // add mover
+                        newState.addMover(mover.head().getNumber(), mover.state[0]);
+
+                    }
+                    
+                    // combine mover lists
+                    int i = 1;
+                    while (i < g.licSize() + 1) {
+                        newState.addMover(i, mover.state[i]);
+                        i++;
+
+                    }
+                
+                    
+                }
+                break;                
+                
+                
+            }
+            case("Move"): {
+                
+                State state1 = this.posDaughter.automaton(g);
+                //this.posDaughter.state = state1;
+                
+                if (state1.head().licensing(g)) {
+                    newState = state1.copy(); 
+                    int i = newState.head().getNumber(); // mover #
+                    
+                    if (newState.state[i]!=null) { // if thre's a mover
+                        List<Feature> mover = newState.state[i]; // get the mover
+                        //check the features
+                        newState.check(i);
+                        newState.check(0);
+                        newState.state[i]=null; // take the mover out of the list
+                        
+                        if (!mover.isEmpty()) { // if it's still moving
+                            newState.addMover(mover.get(0).getNumber() , mover); // add back into the mover list
+                        }
+                        
+                    }
+                    
+                }
  
+                break;
+            }
+        
+        }
+        //System.out.println(newState);
+        this.state = newState;
+        return newState;
+        
+        
+        
+    }
+    
+    
+    
     
     @Override
     public String toString() {
@@ -88,7 +206,7 @@ public class DerivationTree {
                 break;
             }
             case("Merge"): {
-                t = t + "Merge \n( " + this.posDaughter + "\t,\t" + this.negDaughter + " )";
+                t = t + "Merge \n\t( " + this.posDaughter + ",\n\t\t" + this.negDaughter + " )";
                 break;
             }
             case("Move"): {
@@ -99,6 +217,7 @@ public class DerivationTree {
         }
         return t;
     }
+    
     
     
     
