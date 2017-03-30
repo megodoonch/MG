@@ -128,17 +128,7 @@ public class Expression  {
             System.out.println("Spellout error: you can't spell out an incomplete phrase");
             return null;
         }
-//        try {
-//            !this.isComplete(g,false); // spells out any complete phrase regardless of category
-//            throw new MGException("Spellout error: you can't spell out an incomplete phrase");
-//            
-//
-//        } catch (MGException error) {
-//            System.out.println(error.getMessage());
-//            return this.head().getString();
-//
-//        }
-        
+
     }
 
     @Override
@@ -150,6 +140,10 @@ public class Expression  {
         
         return string;
     }
+    
+    
+    
+    
     
     
     

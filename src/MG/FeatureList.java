@@ -54,6 +54,13 @@ public class FeatureList {
 
     }
 
+    public FeatureList check() {
+        FeatureList checked = this.copy();
+        checked.features.remove(0);
+        return checked;
+    }
+    
+    
     @Override
     public String toString() {
         return "" + this.features;

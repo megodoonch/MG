@@ -120,8 +120,13 @@ public class DerivationTree {
                 
             }
             case("Merge"): {
+                
+                
                 State state1 = this.posDaughter.automaton(g);
                 State state2 = this.negDaughter.automaton(g);
+                
+                //System.out.println("Merge");
+                //System.out.println("States: " + state1 + " " + state2);
                 
                 // set the states. this should annotate the current tree with states, i think
                 //this.posDaughter.state = state1;
@@ -138,16 +143,16 @@ public class DerivationTree {
                     newState.check(0);
           
                     // Merge 2: merge a mover
-                    if (!mover.state[0].getFeatures().isEmpty()) {
+                    if (!mover.getState()[0].getFeatures().isEmpty()) {
                         // add mover
-                        newState.addMover(mover.head().getNumber(), mover.state[0]);
+                        newState.addMover(mover.head().getNumber(), mover.getState()[0]);
 
                     }
                     
                     // combine mover lists
                     int i = 1;
                     while (i < g.licSize() + 1) {
-                        newState.addMover(i, mover.state[i]);
+                        newState.addMover(i, mover.getState()[i]);
                         i++;
 
                     }
@@ -162,24 +167,37 @@ public class DerivationTree {
                 
                 State state1 = this.posDaughter.automaton(g);
                 //this.posDaughter.state = state1;
+                //System.out.println("Move");
+                //System.out.println("State: " + state1);
                 
                 if (state1.head().licensing(g)) {
-                    newState = state1.copy(); 
-                    int i = newState.head().getNumber(); // mover #
                     
-                    if (newState.state[i]!=null) { // if thre's a mover
-                        FeatureList mover = newState.state[i]; // get the mover
-                        //check the features
-                        newState.check(i);
-                        newState.check(0);
-                        newState.state[i]=null; // take the mover out of the list
-                        
-                        if (!mover.getFeatures().isEmpty()) { // if it's still moving
-                            newState.addMover(mover.getFeatures().get(0).getNumber() , mover); // add back into the mover list
-                        }
-                        
+                    int i = state1.head().getNumber(); // mover #
+                    //int moverNumber = state1.moving(i, g);
+                    //if (moverNumber == -1) {
+                    if (state1.moving(i, g)) {
+                        // move and stop
+                        newState = state1.move2(g);
+                    } else {
+                        newState = state1.move1(g);
                     }
                     
+//                    newState = state1.copy(); 
+//                    int i = newState.head().getNumber(); // mover #
+//                    
+//                    if (newState.getState()[i]!=null) { // if thre's a mover
+//                        FeatureList mover = newState.getState()[i]; // get the mover
+//                        //check the features
+//                        newState.check(i);
+//                        newState.check(0);
+//                        newState.getState()[i]=null; // take the mover out of the list
+//                        
+//                        if (!mover.getFeatures().isEmpty()) { // if it's still moving
+//                            newState.addMover(mover.getFeatures().get(0).getNumber() , mover); // add back into the mover list
+//                        }
+//                        
+//                    }
+//                    
                 }
  
                 break;
