@@ -10,6 +10,10 @@ Minimalist Grammar in Java
 
 This is my first crack at a string-generating minimalist grammar written in Java. 
 
+## Javadoc
+
+[https://megodoonch.github.io](https://megodoonch.github.io/index.html)
+
 ## How to use it
 
 ### Numeration
