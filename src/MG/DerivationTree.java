@@ -138,7 +138,7 @@ public class DerivationTree {
                     newState.check(0);
           
                     // Merge 2: merge a mover
-                    if (!mover.state[0].isEmpty()) {
+                    if (!mover.state[0].getFeatures().isEmpty()) {
                         // add mover
                         newState.addMover(mover.head().getNumber(), mover.state[0]);
 
@@ -168,14 +168,14 @@ public class DerivationTree {
                     int i = newState.head().getNumber(); // mover #
                     
                     if (newState.state[i]!=null) { // if thre's a mover
-                        List<Feature> mover = newState.state[i]; // get the mover
+                        FeatureList mover = newState.state[i]; // get the mover
                         //check the features
                         newState.check(i);
                         newState.check(0);
                         newState.state[i]=null; // take the mover out of the list
                         
-                        if (!mover.isEmpty()) { // if it's still moving
-                            newState.addMover(mover.get(0).getNumber() , mover); // add back into the mover list
+                        if (!mover.getFeatures().isEmpty()) { // if it's still moving
+                            newState.addMover(mover.getFeatures().get(0).getNumber() , mover); // add back into the mover list
                         }
                         
                     }

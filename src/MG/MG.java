@@ -170,11 +170,11 @@ public class MG {
         for (int n : numbers) {
             fs.add(featureByNumber(n));    
         }
-        this.lexicon.add(new Lex(word, fs));
+        this.lexicon.add(new Lex(word, new FeatureList(fs)));
         addWord(word);
     }
     
-    public void addLexicalItem(String word, List<Feature> features) {
+    public void addLexicalItem(String word, FeatureList features) {
         this.lexicon.add(new Lex(word,features));
         addWord(word);
     }
@@ -228,7 +228,7 @@ public class MG {
             result.expression[0].check(); 
             expr2.expression[0].check();
             // merge 1: merge and stay
-            if (expr2.getExpression()[0].getFeatures().isEmpty()) {
+            if (expr2.getExpression()[0].getFeatures().getFeatures().isEmpty()) {
                 // combine strings to the right
                 result.getExpression()[0].combine(expr2.getExpression()[0].getString(),false);
               
@@ -278,7 +278,7 @@ public class MG {
                 return null;
             } else {
                 // check features
-                if (head.match(mover.getFeatures().get(0))) {
+                if (head.match(mover.getFeatures().getFeatures().get(0))) {
                     result.head().check();
                     mover.check();
                     
@@ -286,7 +286,7 @@ public class MG {
                     result.getExpression()[i] = null;
                     
                     // move 1: move and stay
-                    if (mover.getFeatures().isEmpty()) {
+                    if (mover.getFeatures().getFeatures().isEmpty()) {
                         // combine on left
                         result.getExpression()[0].combine(mover.getString(),true);
                         return result;
@@ -294,12 +294,12 @@ public class MG {
                     // move 2 : move and keep moving    
                     } else {
                         //combine
-                        if (mover.getFeatures().get(0).getPolarity().isCombine()) {
+                        if (mover.getFeatures().getFeatures().get(0).getPolarity().isCombine()) {
                             result.getExpression()[0].combine(mover.getString(),true);
                         }
                         //store
                         // if -store, remove string part
-                        if (!mover.getFeatures().get(0).getPolarity().isStore()) {
+                        if (!mover.getFeatures().getFeatures().get(0).getPolarity().isStore()) {
                             mover.setString("");
                         }
                         

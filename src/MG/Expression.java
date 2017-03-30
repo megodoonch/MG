@@ -41,7 +41,7 @@ public class Expression  {
     }
     
     public boolean store(Lex li) {
-        int i = li.getFeatures().get(0).getNumber();
+        int i = li.getFeatures().getFeatures().get(0).getNumber();
         return this.store(li,i);
     }
 
@@ -50,7 +50,7 @@ public class Expression  {
     }
     
     public Feature headFeature() {
-        return this.expression[0].getFeatures().get(0);
+        return this.expression[0].getFeatures().getFeatures().get(0);
     }
     
     public Lex head() {
@@ -83,7 +83,7 @@ public class Expression  {
     
     public boolean isComplete(MG g, ArrayList<String> cats) {
         Feature h = this.headFeature();
-        if (this.head().getFeatures().size()==1  // only one feature left
+        if (this.head().getFeatures().getFeatures().size()==1  // only one feature left
                 && h.getIntValue() ==-1 // it's negative
                 && h.selectional(g) // it's selectional
                 && cats.contains(this.headFeature().getValue())) {  // it's a feature in the given set

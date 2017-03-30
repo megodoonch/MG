@@ -119,26 +119,69 @@ public class Main {
                     break;
                 }
                 
-                case("merge"): {
-                    numeration.printNumeration();
-                    System.out.print("Choose index of selector: ");
-                    int i = Integer.parseInt(read.nextLine());
-                    System.out.print("Choose index of selectee: ");
-                    int j = Integer.parseInt(read.nextLine());
-                    
-                    numeration.merge(i, j, true);
-                    
+                case ("merge"): {
+                    while (true) {
+                        numeration.printNumeration();
+                        System.out.print("Choose index of selector (q to go back to menu): ");
+                        input = read.nextLine();
+                        if (input.equals("q")) {
+                            break;
+                        }
+                        try {
+                            int i = Integer.parseInt(input);
+                            System.out.print("Choose index of selectee (q to go back to menu): ");
+                            input = read.nextLine();
+                            if (input.equals("q")) {
+                                break;
+                            }
+                            try {
+                                int j = Integer.parseInt(input);
+                                int n = numeration.numeration.size();
+                                if (i < n && j < n) { // if we have those items
+
+                                    numeration.merge(i, j, true);
+                                    break;
+                                } else {
+                                    System.out.println("Numeration doesn't have items at those indices");
+                                }
+
+                            } catch (NumberFormatException e) {
+                                System.out.println("\nMake sure you enter a number!");
+                            }
+
+                        } catch (NumberFormatException e) {
+                            System.out.println("\nMake sure you enter a number!");
+                        }
+
+                    }
                     break;
                 }
                 
-                case("move"): {
-                    numeration.printNumeration();
-                    System.out.print("Choose index of expression to move in: ");
-                    int i = Integer.parseInt(read.nextLine());
-                    numeration.move(i,true);
+                case ("move"): {
+                    while (true) {
+                        numeration.printNumeration();
+                        System.out.print("Choose index of expression to move in (q to go back to the menu): ");
+                        input = read.nextLine();
+                        if (input.equals("q")) {
+                            break;
+                        }
+                        try {
+                            int i = Integer.parseInt(input);
+                            int n = numeration.numeration.size();
+                            if (i < n) { // if we have that item
+
+                                numeration.move(i, true);
+                                break;
+                            } else {
+                                System.out.println("No such item");
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("\nMake sure you enter a number!");
+                        }
+                    }
                     break;
                 }
-                
+
                 case("done"): {
                     if (numeration.getNumeration().size()!=1) {
                         System.out.println("There's zero or more than one item in the numeration. \nIf you think one of the items is a complete sentence,\n enter the number and I'll check just that one.\nOtherwise press enter to continue.");
@@ -282,7 +325,7 @@ public class Main {
                                 for (int n : inds) {
                                     fs.add(g.featureByNumber(n));    
                                 }
-                                g.addLexicalItem(w, fs); // add the word
+                                g.addLexicalItem(w, new FeatureList(fs)); // add the word
                                 
                                 break;
                                 

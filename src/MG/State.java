@@ -13,35 +13,35 @@ import java.util.List;
  * @author meaghanfowlie
  */
 public class State {
-    List<Feature>[] state;
+    FeatureList[] state;
     
     public State(Lex li, MG g) {
         // makes a state from a lexical item
         
         // initialise the state to the right length
-        this.state = new List[g.licSize()+1];
+        this.state = new FeatureList[g.licSize()+1];
         // copy the faetures
         
         // the first element of the state is the features of the lixical item
-        this.state[0] = li.copyFeatures();
+        this.state[0] = li.getFeatures().copy();
        
     }
     
     // makes an empty state
     public State(MG g) {
         // initialise the state to the right length
-        this.state = new List[g.licSize()+1];
+        this.state = new FeatureList[g.licSize()+1];
     }    
     
     public State(int n) {
-        this.state = new List[n];
+        this.state = new FeatureList[n];
     }
     
     public State(Expression e, MG g) {
         // make a state from an expression. Probably don't need this.
-        List<Feature>[] st;
+        FeatureList[] st;
         int n = g.licSize() +1; // length of array
-        st = new List[n];
+        st = new FeatureList[n];
         int i = 0;
         while (i<n) {
             st[i] = e.getExpression()[i].getFeatures();
@@ -51,7 +51,7 @@ public class State {
         
     }
     
-    public boolean addMover(int i, List<Feature> mover) {
+    public boolean addMover(int i, FeatureList mover) {
         if (this.state[i] == null) { // only add a mover if there's room (SMC)
             this.state[i] = mover;
             return true;
@@ -62,15 +62,15 @@ public class State {
     
     public Feature head() {
         // the head feature
-        return this.state[0].get(0);
+        return this.state[0].getFeatures().get(0);
     }
 
-    public List<Feature>[] getState() {
+    public FeatureList[] getState() {
         return state;
     }
     
    public boolean isComplete(MG g) {
-       boolean valid = g.getFinals().contains(this.head().getValue()) && this.state[0].size()==1;
+       boolean valid = g.getFinals().contains(this.head().getValue()) && this.state[0].getFeatures().size()==1;
        int i = 1;
        while (i < g.licSize()+1) {
            if (this.state != null) {
@@ -85,31 +85,27 @@ public class State {
    
    public void check(int i) {   
        // remove the top feature of the ith element of the state
-        this.state[i].remove(0);
+        this.state[i].getFeatures().remove(0);
     }
     
-    public List<Feature> copyFeatures(int i) {
-
-        ArrayList<Feature> fs = new ArrayList<>();
-        if (this.state[i] == null) {
-            fs = null;
-        } else {
-            for (Feature f : this.state[i]) {
-                fs.add(f);
-            }
-        }
-        return fs;
-    }
+    
    
    public State copy() {
-       State cp = new State(this.state.length);
+       
+       int n = this.state.length;
+       //System.out.println(n);
+       State cp = new State(n);
        
        int i = 0;
-       while (i<this.state.length) {
-           cp.state[i] = this.copyFeatures(i);
+       while (i < n) {
+           //System.out.println(i);
+           //System.out.println(state[i]);
+           if (this.state[i] != null) { // only add it if it's not null
+               cp.state[i] = this.state[i].copy();
+           }
            i++;
        }
-       
+
        //cp.state = this.state.clone();
        
        return cp;

@@ -136,6 +136,19 @@ public class Test {
         
         DerivationTree the = new DerivationTree(g.getLexicon().get(0));
         
+        
+        FeatureList fs = new FeatureList();
+        
+        FeatureList fs2 = fs.copy();
+        
+        State state = new State(5);
+        State state2 = state.copy();
+        
+        System.out.println(state);
+        
+        System.out.println(fs + " " +  fs2);
+        
+        
         System.out.println(t1.getState());
         
         System.out.println(t2.automaton(g));

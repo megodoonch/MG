@@ -14,9 +14,9 @@ import java.util.List;
  */
 public class Lex {
     private String string;
-    private List<Feature> features;
+    private FeatureList features;
     
-    public Lex(String string, List<Feature> features) {
+    public Lex(String string, FeatureList features) {
         this.string = string;
         this.features = features;
      
@@ -30,25 +30,19 @@ public class Lex {
         this.string = string;
     }
 
-    public List<Feature> copyFeatures() {
-        ArrayList<Feature> fs = new ArrayList<>();
-        for (Feature f :this.features) {
-            fs.add(f);
-        }
-        return fs;
-    }
+   
     
     public Lex copy() {
         
-        return new Lex(this.string,this.copyFeatures());
+        return new Lex(this.string , this.features.copy());
     }
     
-    public List<Feature> getFeatures() {
+    public FeatureList getFeatures() {
         return features;
     }
     
     public void check() {        
-        this.features.remove(0);
+        this.features.getFeatures().remove(0);
     }
  
     public void combine(String string, boolean left) {
