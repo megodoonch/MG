@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class DerivationTree {
     
-    private String mother;
+    private String operation;
     private DerivationTree posDaughter;
     private DerivationTree negDaughter;
     private Lex lexicalDaughter;
@@ -23,14 +23,14 @@ public class DerivationTree {
     
     public DerivationTree(Lex li) { 
         // nodes with lexical daughters are Lex 
-        this.mother = "Lex";
+        this.operation = "Lex";
         this.lexicalDaughter = li;
         
         
     }
     
     public DerivationTree(int i, MG g) { // given index in lexicon
-        this.mother = "Lex";
+        this.operation = "Lex";
         Lex li = g.getLexicon().get(i);
         this.lexicalDaughter = li;
         this.state = new State(li,g);
@@ -38,21 +38,21 @@ public class DerivationTree {
     
     public DerivationTree(DerivationTree t1, DerivationTree t2) {
         // nodes with two daughters are always Merge
-        this.mother = "Merge";
+        this.operation = "Merge";
         this.posDaughter = t1;
         this.negDaughter = t2;
     }
     
     public DerivationTree(DerivationTree t) {
         // nodes with one daughter that's a tree are always Move
-        this.mother = "Move";
+        this.operation = "Move";
         this.posDaughter = t;
     }
 
     
     
-    public String getMother() {
-        return mother;
+    public String getOperation() {
+        return operation;
     }
 
     public DerivationTree getPosDaughter() {
@@ -79,7 +79,7 @@ public class DerivationTree {
             return null;
         }
         Expression result = null;
-        switch (this.mother) {
+        switch (this.operation) {
             case("Lex"): {
                 result = new Expression(this.lexicalDaughter,g);
                 break;
@@ -113,7 +113,7 @@ public class DerivationTree {
             return null;
         }
         State newState = this.state;
-        switch (this.mother) {
+        switch (this.operation) {
             case("Lex"): {
                 newState = new State(this.lexicalDaughter,g);
                 break;
@@ -200,7 +200,7 @@ public class DerivationTree {
     @Override
     public String toString() {
         String t = "";
-        switch (this.mother) {
+        switch (this.operation) {
             case("Lex"): {
                 t = t + this.lexicalDaughter;
                 break;
