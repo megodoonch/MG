@@ -26,6 +26,7 @@ public class MoverCell {
     public int getEnd() {
         return end;
     }
+
     
-    
+        
 }

@@ -41,6 +41,20 @@ public class Cell {
         return end;
     }
 
+    public CellEntry getNth(int n) {
+        if (n<this.entries.size()) {
+            return this.entries.get(n);
+        }
+        else return null;
+    }
+    
+    // number of entries
+    public int size() {
+        return this.entries.size();
+    }
+    
+    
+    
     @Override
     public String toString() {
         return "Cell{" + "entries=" + entries + ", start=" + start + ", end=" + end + '}';
