@@ -6,8 +6,6 @@
 package MG;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -24,6 +22,7 @@ public class MG {
     private ArrayList<String> alphabet;
     private ArrayList<Lex> lexicon;
     private ArrayList<String> finals; // final categories
+    
     
 
 

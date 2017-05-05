@@ -153,16 +153,16 @@ public class CellEntry {
                 
     }
     
-    public CellEntry move1(MG g) {
-        State newState = this.state.move1(g);
-        MoverCell[] newMovers = new MoverCell[this.moverIndices.length];
-        
-        
-        return new CellEntry(newState,);
-        
-        
-               
-    }
+//    public CellEntry move1(MG g) {
+//        State newState = this.state.move1(g);
+//        MoverCell[] newMovers = new MoverCell[this.moverIndices.length];
+//        
+//        
+//        return new CellEntry(newState,);
+//        
+//        
+//               
+//    }
     
     
     
