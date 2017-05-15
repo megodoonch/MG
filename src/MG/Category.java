@@ -10,31 +10,64 @@ import java.util.ArrayList;
 /**
  *
  * @author meaghanfowlie
+ * Stores information about a category, primarily what it is an adjunct of and what side of the head it adjoins on
  */
 public class Category {
-    private ArrayList<String> adjuncts;
+    private ArrayList<String> adjunctOf;
     private String name;
+    private boolean left; // adjoins to the left
     
-    public Category(String name, ArrayList<String> adjuncts) {
+    public Category(String name, ArrayList<String> adjunctOf, Boolean left) {
         this.name = name;
-        this.adjuncts = adjuncts;
+        this.adjunctOf = adjunctOf;
+        this.left = left;
         
     }
 
-    public ArrayList<String> getAdjuncts() {
-        return adjuncts;
+    public Category(String name,ArrayList<String> adjunctOf) {
+        this.adjunctOf = adjunctOf;
+        this.name = name;
+        this.left = true;
     }
-
+    
+    public Category(String name) {
+        this.adjunctOf = new ArrayList<>();
+        this.name = name;
+        this.left = true;
+    }
+    
+    
     public String getName() {
         return name;
     }
+
+    public ArrayList<String> getAdjunctOf() {
+        return adjunctOf;
+    }
+
+    public boolean isLeft() {
+        return left;
+    }
+
+    public void setLeft(boolean left) {
+        this.left = left;
+    }
+    
+    
     
     public void addAdjunct(String adjunct) {
-        this.adjuncts.add(adjunct);
+        this.adjunctOf.add(adjunct);
     }
     
-    public boolean hasAdjunct(String cat) {
-        return this.adjuncts.contains(cat);
+    public boolean isAdjunctOf(String cat) {
+        return this.adjunctOf.contains(cat);
     }
+
+    @Override
+    public String toString() {
+        return "Category{" + "adjunctOf=" + adjunctOf + ", name=" + name + ", left=" + left + '}';
+    }
+    
+    
     
 }

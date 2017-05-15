@@ -114,7 +114,7 @@ public class Test {
 //        System.out.println("\n* Test 4: which cat slept using derivation trees *\n");
 //        
         // we define trees that we then evaluate.
-        DerivationTree t1 = new DerivationTree(new DerivationTree(g.getLexicon().get(11)), new DerivationTree(g.getLexicon().get(3)));
+        DerivationTree t1 = new DerivationTree("Merge",new DerivationTree(g.getLexicon().get(11)), new DerivationTree(g.getLexicon().get(3)));
         
         Expression t1_output = t1.evaluate(g);
         System.out.println("*Stop partway*");
@@ -123,9 +123,9 @@ public class Test {
         
         System.out.println("\n*continue...*");
         
-        DerivationTree t2 = new DerivationTree (new DerivationTree (new DerivationTree(g.getLexicon().get(10)), new DerivationTree (
-                        new DerivationTree (
-                                new DerivationTree(g.getLexicon().get(9)),  new DerivationTree(
+        DerivationTree t2 = new DerivationTree (new DerivationTree ("Merge", new DerivationTree(g.getLexicon().get(10)), new DerivationTree (
+                        new DerivationTree ("Merge",
+                                new DerivationTree(g.getLexicon().get(9)),  new DerivationTree("Merge",
                                         new DerivationTree(g.getLexicon().get(6)),t1)))));
         
         System.out.println("\n"+t2);

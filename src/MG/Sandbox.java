@@ -35,12 +35,19 @@ public class Sandbox {
         
         System.out.println(g);
         
-        List<String> sel = Arrays.asList("N", "D", "V", "T", "C");
+        List<String> sel = Arrays.asList("N", "D", "V", "T", "C", "A", "P");
         
         for (String f : sel) {
             g.addBareFeature(f,"sel");
         }
         
+        g.addAdjunct("A","N");
+        g.addAdjunct("P", "N");
+        g.addAdjunct("P", "V");
+        g.addAdjunct("C", "N");
+        
+        g.changeAdjunctSide("P",false);
+        g.changeAdjunctSide("C",false);
 
         g.generateFeatures();
         
@@ -74,6 +81,12 @@ public class Sandbox {
         g.addLexicalItem("who", new Integer[] {8,0});
         g.addLexicalItem("", new Integer[] {11,5,12}); // T
         g.addLexicalItem("", new Integer[] {13,1,14}); // C
+        g.addLexicalItem("happy", new Integer[] {16});
+        g.addLexicalItem("blue", new Integer[] {16});
+        g.addLexicalItem("with", new Integer[] {9,18});
+        g.addLexicalItem("on", new Integer[] {9,18});
+        g.addLexicalItem("happy", new Integer[] {16,2});
+
         
         // user interface
         
@@ -99,16 +112,19 @@ public class Sandbox {
 //        Expression who = numeration.get(5);
 //        Expression t = numeration.get(6);
 
-        numeration.merge(0,3,true);
+        //numeration.merge(0,3,true);
         
 //        for (Feature f : g.getFeatures()) {
 //            System.out.println("" + f + f.getNumber());
 //        }
         
-        numeration.merge(5,0,true);
+        //numeration.merge(5,0,true);
         
+        //System.out.println(g.toString());
         
-        
+        numeration.merge(1,3,true);
+        numeration.merge(10,13,true);
+        numeration.adjoin(2, 12,true);
         
         
         

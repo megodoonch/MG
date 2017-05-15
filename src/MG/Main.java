@@ -157,6 +157,45 @@ public class Main {
                     break;
                 }
                 
+                case ("adjoin"): {
+                    while (true) {
+                        numeration.printNumeration();
+                        System.out.print("Choose index of adjoined-to phrase (q to go back to menu): ");
+                        input = read.nextLine();
+                        if (input.equals("q")) {
+                            break;
+                        }
+                        try {
+                            int i = Integer.parseInt(input);
+                            System.out.print("Choose index of adjunct (q to go back to menu): ");
+                            input = read.nextLine();
+                            if (input.equals("q")) {
+                                break;
+                            }
+                            try {
+                                int j = Integer.parseInt(input);
+                                int n = numeration.numeration.size();
+                                if (i < n && j < n) { // if we have those items
+
+                                    numeration.adjoin(i, j, true);
+                                    break;
+                                } else {
+                                    System.out.println("Numeration doesn't have items at those indices");
+                                }
+
+                            } catch (NumberFormatException e) {
+                                System.out.println("\nMake sure you enter a number!");
+                            }
+
+                        } catch (NumberFormatException e) {
+                            System.out.println("\nMake sure you enter a number!");
+                        }
+
+                    }
+                    break;
+                }
+                
+                
                 case ("move"): {
                     while (true) {
                         numeration.printNumeration();
@@ -376,7 +415,7 @@ public class Main {
         
         
         
-        List<String> sel = Arrays.asList("N", "D", "V");
+        List<String> sel = Arrays.asList("N", "D", "V","T","C","A","P");
         
         for (String f : sel) {
             g.addBareFeature(f,"sel");
@@ -388,6 +427,15 @@ public class Main {
             g.addFinal(f);
         }
         
+        g.addAdjunct("A","N");
+        g.addAdjunct("P", "N");
+        g.addAdjunct("P", "V");
+        g.addAdjunct("C", "N");
+        
+        g.changeAdjunctSide("P",false);
+        g.changeAdjunctSide("C",false);
+
+        
         g.generateFeatures();
         
         //System.out.println(g);
@@ -397,12 +445,12 @@ public class Main {
         
         //System.out.println(g);
         
-        Feature minwh = g.getFeatures().get(0);
-        Feature poswh = g.getFeatures().get(1);
-        Feature catN = g.getFeatures().get(6);
-        Feature selN = g.getFeatures().get(7);
-        Feature catD= g.getFeatures().get(8);
-        
+//        Feature minwh = g.getFeatures().get(0);
+//        Feature poswh = g.getFeatures().get(1);
+//        Feature catN = g.getFeatures().get(6);
+//        Feature selN = g.getFeatures().get(7);
+//        Feature catD= g.getFeatures().get(8);
+//        
         
         //g.printFeatures();
         
@@ -423,6 +471,14 @@ public class Main {
         g.addLexicalItem("", new Integer[] {11,5,12}); // T
         g.addLexicalItem("", new Integer[] {13,1,14}); // C
         g.addLexicalItem("which", new Integer[] {7,8,4,0}); // -wh
+        
+        g.addLexicalItem("happy", new Integer[] {16});
+        g.addLexicalItem("blue", new Integer[] {16});
+        g.addLexicalItem("with", new Integer[] {9,18});
+        g.addLexicalItem("on", new Integer[] {9,18});
+        g.addLexicalItem("happy", new Integer[] {16,2});
+
+  
         
         
         // user interface

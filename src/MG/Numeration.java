@@ -61,9 +61,38 @@ public class Numeration {
         return merged;
         
     }
+    
+    
 
     public Expression merge(int i, int j) {
         return this.merge(i, j,false);
+    }
+    
+    public Expression adjoin(int i, int j, boolean print) {
+        // merge expressions at index i and j 
+        Expression expr1 = numeration.get(i);
+        Expression expr2 = numeration.get(j);
+        Expression merged = this.g.adjoin(expr1,expr2);
+        if (merged != null) { 
+            if (print) {
+                System.out.println("\n--> Generated " + merged);
+            }
+            this.numeration.remove(expr1);
+            this.numeration.remove(expr2);
+            this.numeration.add(merged);
+            
+            
+        }
+        
+        if (print) {
+            printNumeration();
+        }
+        return merged;
+        
+    }
+    
+    public Expression adjoin(int i, int j) {
+        return this.adjoin(i, j,false);
     }
     
     public Expression move(int i, boolean print) {

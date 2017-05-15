@@ -6,6 +6,8 @@
 package MG;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -22,7 +24,7 @@ public class MG {
     private ArrayList<String> alphabet;
     private ArrayList<Lex> lexicon;
     private ArrayList<String> finals; // final categories
-    
+    private Map<String,Category> categories;
     
 
 
@@ -36,6 +38,7 @@ public class MG {
         this.alphabet = new ArrayList<>();
         this.lexicon = new ArrayList<>();
         this.finals = new ArrayList<>();
+        this.categories = new HashMap<>();
     
         
     }
@@ -76,6 +79,10 @@ public class MG {
         return finals;
     }
 
+    public Map<String,Category> getCategories() {
+        return categories;
+    }
+
     
     // adding things
     
@@ -102,6 +109,7 @@ public class MG {
             case "sel": 
                 if (!this.bareSelFeatures.contains(feature)) {
                     this.bareSelFeatures.add(feature);
+                    this.categories.put(feature, new Category(feature));
                 }
                 //System.out.println(feature);
                 break;            
@@ -120,6 +128,14 @@ public class MG {
         if (!this.features.contains(feature)) {
             this.features.add(feature);
         }
+    }
+    
+    public void addAdjunct(String adjunct,String adjoinedTo) {
+        this.categories.get(adjunct).addAdjunct(adjoinedTo);
+    }
+    
+    public void changeAdjunctSide(String adjunct, boolean left) {
+        this.categories.get(adjunct).setLeft(left);
     }
     
     public void addWord(String word) {
@@ -189,6 +205,7 @@ public class MG {
                 ",\n bareSelFeatures = " + bareSelFeatures + 
                 ",\n bareLicFeatures = " + bareLicFeatures + 
                 ",\n features = " + features + 
+                ",\n categories = " + categories + 
                 ",\n final categories = " + finals + 
                 ",\n alphabet = " + alphabet +
                 ",\n lexicon = " + lexicon + "\n }";
@@ -322,5 +339,57 @@ public class MG {
     }
     
  
+    //ADJOIN
+    public Expression adjoin(Expression expr1,Expression expr2) {
+        
+        // make a copy of expr1 where we'll make our new guy
+        Expression result = expr1.copy(this);
+        // get the category of the adjunct
+        Category adjunct = this.categories.get(expr2.headFeature().getValue());
+        //System.out.println(adjunct);
+        // if Adjoin even applies
+        if (result.headFeature().getSet().equals("sel") // it's a selectional feature
+                && expr2.headFeature().getSet().equals("sel") // expr2 head is also selectional
+                && adjunct.getAdjunctOf().contains(result.headFeature().getValue()) ){ // expr2 is an adjunct of expr1
+            //check adjunct feature
+            expr2.expression[0].check();
+            // adjoin 1: adjoin and stay
+            if (expr2.getExpression()[0].getFeatures().getFeatures().isEmpty()) {
+                // combine strings
+                result.getExpression()[0].combine(expr2.getExpression()[0].getString(), adjunct.isLeft());
+              
+            // Merge 2: merge a mover    
+            } else {
+                // if +combine
+                if (expr2.headFeature().getPolarity().isCombine()) {
+                    //combine string 
+                    result.getExpression()[0].combine(expr2.getExpression()[0].getString(), adjunct.isLeft());                    
+                }
+                
+                // if -store, remove string part
+                if (!expr2.headFeature().getPolarity().isStore()) {
+                    expr2.head().setString("");
+                }
+                // store whereever it belongs
+                if (!result.store(expr2.head())) { // SMC violation
+                    return null;
+                }
+    
+            }
+            
+            // combine mover lists
+            result.combineMovers(expr2, this.licSize()+1);
+            
+            
+        } else {
+            System.out.println("\n*** Adjoin error *** : not an adjunct");
+            return null;
+        }
+        
+        return result;
+    }
+    
+    
+    
     
 }
