@@ -17,6 +17,15 @@ public class Polarity {
     private boolean store; // if true, store string, not just features, in mover list
     private String moveType;
     
+    /**
+     * Class constructor specifying everything.
+     * @param value name, eg N or wh
+     * @param set sel or lic
+     * @param intValue +1 or -1 (pos or neg)
+     * @param combine only for lic. If <code>true</code>, combine the string now even though it's moving. For covert and copy move.
+     * @param store only for lic. If <code>true</code>, store the string in the mover in the mover list; otherwise store the empty string. For overt and copy move.
+     * @param moveType overt, covert, copy, delete. Just in case we want to refer to it, but this info is contained in the combine and store values.
+     */
     public Polarity(String value, String set, int intValue, boolean combine, boolean store, String moveType) {
         this.value = value;
         this.set = set;
@@ -27,6 +36,12 @@ public class Polarity {
     }
     
     // default move is -combine +store
+    /**
+     * Class constructor for overt move
+     * @param value 
+     * @param set
+     * @param intValue 
+     */
     public Polarity(String value, String set, int intValue) {
         this(value,set,intValue,false,true,"");
     }

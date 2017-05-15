@@ -65,7 +65,13 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category{" + "adjunctOf=" + adjunctOf + ", name=" + name + ", left=" + left + '}';
+        String side;
+        if (this.left) {
+            side = "left";
+        } else {
+            side = "right";
+        }       
+        return name + ", " + side + " adjunct of " + adjunctOf;
     }
     
     

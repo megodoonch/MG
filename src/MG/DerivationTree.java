@@ -9,18 +9,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Creates and evaluates derivation trees for the MG
+ * We include the tree automaton from Kobele et al 2007
  * @author meaghanfowlie
  */
 public class DerivationTree {
     
     private String operation;
-    private DerivationTree posDaughter;
+    private DerivationTree posDaughter; // these are misnomers for Adjoin, but whatever.
     private DerivationTree negDaughter;
     private Lex lexicalDaughter;
     private State state;
     
-    
+    /**
+     * Lexical derivation tree constructor
+     * @param li the lexical item
+     */
     public DerivationTree(Lex li) { 
         // nodes with lexical daughters are Lex 
         this.operation = "Lex";
@@ -29,6 +33,11 @@ public class DerivationTree {
         
     }
     
+    /**
+     * Lexical DT constructor, using the index of the LI in the grammar
+     * @param i index
+     * @param g grammar
+     */
     public DerivationTree(int i, MG g) { // given index in lexicon
         this.operation = "Lex";
         Lex li = g.getLexicon().get(i);
@@ -36,13 +45,23 @@ public class DerivationTree {
         this.state = new State(li,g);
     } 
     
+    /**
+     * Binary DT constructor for Merge or Adjoin.
+     * @param operation Merge or Adjoin
+     * @param t1 left daughter (selector/adjoinee)
+     * @param t2 right daughter (selectee/adjunct)
+     */
     public DerivationTree(String operation, DerivationTree t1, DerivationTree t2) {
         // nodes with two daughters are always Merge
         this.operation = operation;
-        this.posDaughter = t1;
+        this.posDaughter = t1; 
         this.negDaughter = t2;
     }
     
+    /**
+     * DT constructor for Move
+     * @param t 
+     */
     public DerivationTree(DerivationTree t) {
         // nodes with one daughter that's a tree are always Move
         this.operation = "Move";
@@ -72,9 +91,13 @@ public class DerivationTree {
     }
     
     
-
+    /**
+     * evaluates the tree to get an expression.
+     * Recursively defined.
+     * @param g the grammar
+     * @return the expression derived 
+     */
     public Expression evaluate(MG g) {
-        // evaluate the tree to get an expression
         if (this == null) {
             return null;
         }
@@ -102,16 +125,25 @@ public class DerivationTree {
     }
     
     
-    
+    /**
+     * If you're evaluating anyway, you can then return the state
+     * @param g
+     * @return the state of the tree
+     */
     public State evalToState(MG g) {
         // state of  dt is the tuple of features, from finite state tree automton in Kobele et al 2007
         return new State(this.evaluate(g),g);
    
     }
     
-    
+    /**
+     * tree automaton from Kobele et al 2007.
+     * States are tuples of features.
+     * Transitions are just the feature calculus part of the operations
+     * @param g
+     * @return the final state of the automaton
+     */
     public State automaton(MG g) {
-        // evaluate the tree to get an expression
         if (this == null) {
             return null;
         }
@@ -122,8 +154,7 @@ public class DerivationTree {
                 break;
                 
             }
-            case("Merge"): {
-                
+            case("Merge"): {               
                 
                 State state1 = this.posDaughter.automaton(g);
                 State state2 = this.negDaughter.automaton(g);
@@ -151,9 +182,7 @@ public class DerivationTree {
                         newState.addMover(i, mover.getState()[i]);
                         i++;
 
-                    }
-                
-                    
+                    }                                    
                 }
                 break;                
                 
@@ -180,8 +209,7 @@ public class DerivationTree {
                 break;
             }
             case("Adjoin"): {
-                
-                
+                               
                 State state1 = this.posDaughter.automaton(g);
                 State state2 = this.negDaughter.automaton(g);
                 Category adjunct = g.getCategories().get(state2.head().getValue());
@@ -239,6 +267,10 @@ public class DerivationTree {
             }
             case("Merge"): {
                 t = t + "Merge \n\t( " + this.posDaughter + ",\n\t\t" + this.negDaughter + " )";
+                break;
+            }
+             case("Adjoin"): {
+                t = t + "Adjoin \n\t( " + this.posDaughter + ",\n\t\t" + this.negDaughter + " )";
                 break;
             }
             case("Move"): {

@@ -6,12 +6,17 @@
 package MG;
 
 /**
- *
+ * The state of a derivation as defined in Kobele et al 2007
  * @author meaghanfowlie
  */
 public class State {
     private FeatureList[] state;
     
+    /**
+     * Class constructor for a lexical item
+     * @param li the LI
+     * @param g  the grammar
+     */
     public State(Lex li, MG g) {
         // makes a state from a lexical item
         
@@ -24,18 +29,30 @@ public class State {
        
     }
     
-    // makes an empty state
+    /**
+     * makes an empty state of correct length based on the grammar
+     * @param g 
+     */
     public State(MG g) {
         // initialise the state to the right length
         this.state = new FeatureList[g.licSize()+1];
     }    
     
+    /**
+     * makes an empty state of length <code>n</code>
+     * @param n length of state
+     */
     public State(int n) {
         this.state = new FeatureList[n];
     }
     
+    /**
+     * make a state from an expression. Probably don't need this.
+     * @param e
+     * @param g 
+     */
     public State(Expression e, MG g) {
-        // make a state from an expression. Probably don't need this.
+        
         FeatureList[] st;
         int n = g.licSize() +1; // length of array
         st = new FeatureList[n];
