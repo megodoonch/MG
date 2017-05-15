@@ -233,6 +233,12 @@ public class MG {
     
     
     //MERGE
+    /**
+     * Merges two expressions if their head features match
+     * @param expr1 the selector
+     * @param expr2 the selectee
+     * @return a new expression with both the expressions together
+     */
     public Expression merge(Expression expr1,Expression expr2) {
         
         // make a copy of expr1 where we'll make our new guy
@@ -281,6 +287,11 @@ public class MG {
     
     
     // MOVE
+    /**
+     * Based on the head feature, takes the corresponding mover out of storage and (internally) merges it 
+     * @param expr an expression
+     * @return the expression with Move applied
+     */
     public Expression move(Expression expr) {
         Expression result = expr.copy(this);
         
